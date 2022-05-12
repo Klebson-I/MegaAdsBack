@@ -1,8 +1,8 @@
-import  express from 'express';
+import express from 'express';
 //jeśli użyjemy esModuleInterop to nie trzeba * as
 import 'express-async-errors';
 import cors from 'cors';
-
+import {handleError} from "./utils/utils";
 
 const app = express();
 
@@ -13,6 +13,8 @@ const app = express();
  app.use(express.json());
 
 
+
+app.use(handleError);
 
 app.listen(3001,() => {
     console.log("App is running on 3001 port!");
