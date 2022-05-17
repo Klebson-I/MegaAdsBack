@@ -3,6 +3,7 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import {handleError} from "./utils/utils";
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 
@@ -11,6 +12,12 @@ const app = express();
  }));
 
  app.use(express.json());
+
+ //100 zapytań na 5 min
+ app.use(rateLimit({
+     max:100,
+     windowMs:5*60*1000,
+ }))
 
 
 
