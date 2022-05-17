@@ -2,6 +2,7 @@ import {AdEntity} from "../types";
 import {ValidationError} from "../utils/utils";
 import {pool} from "../utils/connection";
 import {FieldPacket} from "mysql2";
+import {v4 as uuid} from 'uuid';
 
 interface NewAdEntity extends Omit<AdEntity,'id'> {
     id?:string;
@@ -9,9 +10,10 @@ interface NewAdEntity extends Omit<AdEntity,'id'> {
 
 type OneRecordReturn = [NewAdEntity[],FieldPacket[]];
 
+
+
 export class AdRecord implements AdEntity{
     id:string;
-
     name:string;
     description:string;
     price:number;
@@ -40,18 +42,53 @@ export class AdRecord implements AdEntity{
         }
 
         this.description=obj.description;
-        this.id=obj.id;
+        this.id=obj.id??uuid();
         this.name=obj.name;
         this.lat=obj.lat;
         this.lon=obj.lon;
         this.url=obj.url;
         this.price=obj.price;
+
+    }
+
+    async insert() :Promise<string> {
+        try {
+            await pool.execute("INSERT INTO `ads` VALUES (:id,:name,:description,:price,:lat,:lon,:url)",{
+                id:this.id,
+                name:this.name,
+                description:this.description,
+                price:this.price,
+                lat:this.lat,
+                lon:this.lon,
+                url:this.url,
+            });
+
+            return this.id;
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 
     static async getOne(id: string) : Promise<AdRecord|null> {
-        const [results] = await pool.execute("SELECT * from `ads` where `id` = :id",{
-            id
-        }) as OneRecordReturn;
-        return results.length===0?null:new AdRecord(results[0]);
+        try {
+            const [results] = await pool.execute("SELECT * from `ads` where `id` = :id",{
+                id
+            }) as OneRecordReturn;
+            return results.length===0?null:new AdRecord(results[0]);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    static async getAll() : Promise<AdRecord[]> {
+        try {
+            const [results] = (await pool.execute("SELECT * from `ads`")) as OneRecordReturn;
+            return results.length===0?[]:results.map(obj=>new AdRecord(obj));
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 }

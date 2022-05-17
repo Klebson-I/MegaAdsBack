@@ -4,6 +4,7 @@ import 'express-async-errors';
 import cors from 'cors';
 import {handleError} from "./utils/utils";
 import rateLimit from 'express-rate-limit';
+import {AdRecord} from "./records/ad.record";
 
 const app = express();
 
@@ -17,7 +18,23 @@ const app = express();
  app.use(rateLimit({
      max:100,
      windowMs:5*60*1000,
- }))
+ }));
+
+ (async()=>{
+     const test2 = {
+         url:"test2",
+         lon:0,
+         lat:0,
+         description:"test2",
+         price:0,
+         name:"test2"
+     }
+
+     const ad = new AdRecord(test2);
+
+     const id = await ad.insert();
+
+ })();
 
 
 
