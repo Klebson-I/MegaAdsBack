@@ -1,4 +1,5 @@
 import {AdRecord} from "../records/ad.record";
+import {AdEntity} from "../types";
 
 
 
@@ -34,7 +35,6 @@ test('AdRecord return data from database for all entries', async()=>{
 
 
 test('Inserted record exist in database',async () => {
-
     const test2 = {
         url:"test2",
         lon:0,
@@ -57,5 +57,9 @@ test('Inserted record exist in database',async () => {
     expect(adFromDB.name).toBe(test2.name);
     expect(adFromDB.description).toBe(test2.description);
     expect(adFromDB.price).toBe(test2.price);
-})
+});
 
+test("get a shortcut of records",async()=>{
+    const data = await AdRecord.findAll("");
+    expect((data[0] as AdRecord).description).toBeUndefined();
+})

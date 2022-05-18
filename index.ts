@@ -20,26 +20,12 @@ const app = express();
      windowMs:5*60*1000,
  }));
 
- (async()=>{
-     const test2 = {
-         url:"test2",
-         lon:0,
-         lat:0,
-         description:"test2",
-         price:0,
-         name:"test2"
-     }
 
-     const ad = new AdRecord(test2);
-
-     const id = await ad.insert();
-
- })();
 
 
 
 app.use(handleError);
 
 app.listen(3001,() => {
-    console.log("App is running on 3001 port!");
+    console.log("App is running on 3001 port http://localhost:3001/ !");
 })
